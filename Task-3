@@ -1,0 +1,32 @@
+# ─────────────────────────────────────────────────────────────
+# TrendPulse — Task 3: Data Analysis
+# ─────────────────────────────────────────────────────────────
+
+import pandas as pd
+
+def load_data():
+    df = pd.read_csv("data/cleaned_trends.csv")
+    return df
+
+
+def analyze(df):
+    print("\n── Category Distribution ──")
+    print(df["category"].value_counts())
+
+    print("\n── Average Score per Category ──")
+    print(df.groupby("category")["score"].mean())
+
+    print("\n── Top 5 Stories by Score ──")
+    print(df.sort_values(by="score", ascending=False)[["title", "score"]].head())
+
+    print("\n── Most Active Authors ──")
+    print(df["author"].value_counts().head())
+
+
+def main():
+    df = load_data()
+    analyze(df)
+
+
+if __name__ == "__main__":
+    main()
