@@ -1,0 +1,36 @@
+# ─────────────────────────────────────────────────────────────
+# TrendPulse — Task 4: Data Visualisation
+# ─────────────────────────────────────────────────────────────
+
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def load_data():
+    return pd.read_csv("data/cleaned_trends.csv")
+
+
+def plot_category_distribution(df):
+    df["category"].value_counts().plot(kind="bar")
+    plt.title("Stories per Category")
+    plt.xlabel("Category")
+    plt.ylabel("Count")
+    plt.show()
+
+
+def plot_avg_score(df):
+    df.groupby("category")["score"].mean().plot(kind="bar")
+    plt.title("Average Score per Category")
+    plt.xlabel("Category")
+    plt.ylabel("Average Score")
+    plt.show()
+
+
+def main():
+    df = load_data()
+
+    plot_category_distribution(df)
+    plot_avg_score(df)
+
+
+if __name__ == "__main__":
+    main()
