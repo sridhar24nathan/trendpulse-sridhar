@@ -1,0 +1,57 @@
+# ─────────────────────────────────────────────────────────────
+# TrendPulse — Task 2: Clean JSON and Convert to CSV
+# ─────────────────────────────────────────────────────────────
+
+import json
+import pandas as pd
+import os
+
+# Load latest JSON file
+def load_json():
+    folder = "data"
+    files = sorted(os.listdir(folder))
+    latest_file = [f for f in files if f.startswith("trends_")][-1]
+
+    filepath = os.path.join(folder, latest_file)
+
+    with open(filepath, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    print(f"Loaded {len(data)} records from {latest_file}")
+    return data
+
+
+def clean_data(data):
+    df = pd.DataFrame(data)
+
+    # Remove rows with missing titles or categories
+    df = df.dropna(subset=["title", "category"])
+
+    # Remove duplicates
+    df = df.drop_duplicates(subset=["post_id"])
+
+    # Ensure numeric fields are valid
+    df["score"] = pd.to_numeric(df["score"], errors="coerce").fillna(0)
+    df["num_comments"] = pd.to_numeric(df["num_comments"], errors="coerce").fillna(0)
+
+    return df
+
+
+def save_csv(df):
+    os.makedirs("data", exist_ok=True)
+    filename = "data/cleaned_trends.csv"
+    df.to_csv(filename, index=False)
+    print(f"Saved cleaned data to {filename}")
+
+
+def main():
+    data = load_json()
+    df = clean_data(data)
+    save_csv(df)
+
+    print("\nSample data:")
+    print(df.head())
+
+
+if __name__ == "__main__":
+    main()
